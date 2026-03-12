@@ -21,9 +21,12 @@ Outputs:
     - product.json: Metadata about applied ICA
 """
 
-# Copyright (c) 2020 brainlife.io
+# Copyright (c) 2026 brainlife.io
 #
 # This app applies ICA decomposition to MNE raw data
+#
+# Authors:
+# - Maximilien Chaumon (https://github.com/dnacombo)
 
 import sys
 import os
@@ -136,8 +139,9 @@ ica.apply(raw)
 raw.save(os.path.join('out_dir', 'meg.fif'), overwrite=True)
 
 # == CREATE PRODUCT.JSON ==
-create_product_json()
-add_raw_info_to_product(raw)
-add_image_to_product(overlay_fig_path, 'ICA Overlay')
-add_info_to_product(f'Applied ICA with {len(ica.exclude)} excluded components', 'success')
+product_items = []
+add_raw_info_to_product(product_items, raw)
+add_image_to_product(product_items, overlay_fig_path, 'ICA Overlay')
+add_info_to_product(product_items, f'Applied ICA with {len(ica.exclude)} excluded components', 'success')
+create_product_json(product_items)
 
