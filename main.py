@@ -99,6 +99,8 @@ if config.get('ECG_chan') and config['ECG_chan'] != 'None':
         ecg_ch = ecg_ch[0] if ecg_ch else None
     except ValueError:
         pass
+    
+product_items = []
 
 # == DETECT BAD COMPONENTS ==
 if config.get('reject_EOG', False):
@@ -106,14 +108,14 @@ if config.get('reject_EOG', False):
                                             start=None, stop=None, l_freq=1, h_freq=10, 
                                             reject_by_annotation=True, measure='zscore', verbose=None)
     ica.exclude.extend(eog_idx)
-    add_info_to_product(f'Excluded {len(eog_idx)} EOG artifact components')
+    add_info_to_product(product_items,f'Excluded {len(eog_idx)} EOG artifact components')
 
 if config.get('reject_ECG', False):
     ecg_idx, ecg_scores = ica.find_bads_ecg(raw, ch_name=ecg_ch, threshold='auto',
                                             start=None, stop=None, l_freq=8, h_freq=16,
                                             method='ctps', reject_by_annotation=True, measure='zscore', verbose=None)
     ica.exclude.extend(ecg_idx)
-    add_info_to_product(f'Excluded {len(ecg_idx)} ECG artifact components')
+    add_info_to_product(product_items,f'Excluded {len(ecg_idx)} ECG artifact components')
 
 # == CREATE OVERLAY VISUALIZATION ==
 plt.figure(figsize=(12, 6))
@@ -139,7 +141,6 @@ ica.apply(raw)
 raw.save(os.path.join('out_dir', 'meg.fif'), overwrite=True)
 
 # == CREATE PRODUCT.JSON ==
-product_items = []
 add_raw_info_to_product(product_items, raw)
 add_image_to_product(product_items, overlay_fig_path, 'ICA Overlay')
 add_info_to_product(product_items, f'Applied ICA with {len(ica.exclude)} excluded components', 'success')
