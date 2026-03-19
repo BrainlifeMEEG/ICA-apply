@@ -67,3 +67,6 @@ brainlife.io is publicly funded and for the sustainability of the project it is 
 
 #### MIT Copyright (c) 2026 brainlife.io The University of Texas at Austin and Indiana University
 
+## Citation
+
+Hayashi, S., Caron, B.A., Heinsfeld, A.S. et al. brainlife.io: a decentralized and open-source cloud platform to support neuroscience research. Nat Methods 21, 809–813 (2024). https://doi.org/10.1038/s41592-024-02237-2
