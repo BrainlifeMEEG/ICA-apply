@@ -15,9 +15,9 @@ Inputs:
     - ECG_chan: Optional ECG channel name or index
 
 Outputs:
-    - out_dir/meg.fif: Raw data with ICA components applied
+    - out_dir/raw.fif: Raw data with ICA components applied
     - out_figs/plot_overlay.png: Visualization of ICA overlay before application
-    - out_report/report_ica.html: QC report with ICA information
+    - out_report/report.html: QC report with ICA information
     - product.json: Metadata about applied ICA
 """
 
@@ -46,7 +46,8 @@ from brainlife_utils import (
     add_info_to_product,
     add_raw_info_to_product,
     add_image_to_product,
-    save_figure_with_base64
+    save_figure_with_base64,
+    require_config_keys
 )
 
 # Set up matplotlib for headless execution
@@ -57,6 +58,7 @@ ensure_output_dirs('out_dir', 'out_figs', 'out_report')
 
 # Load configuration
 config = load_config()
+require_config_keys(config, ['mne', 'ica'])
 
 # == LOAD DATA ==
 data_file = config['mne']
@@ -133,12 +135,13 @@ report_text = f'<p><b>Total Components:</b> {ica.n_components}</p>'
 report_text += f'<p><b>Excluded Components:</b> {len(ica.exclude)}</p>'
 if ica.exclude:
     report_text += f'<p><b>Excluded Indices:</b> {sorted(ica.exclude)}</p>'
+report.save(os.path.join('out_report', 'report.html'), overwrite=True)
 
 # == APPLY ICA ==
 ica.apply(raw)
 
 # Save processed raw data
-raw.save(os.path.join('out_dir', 'meg.fif'), overwrite=True)
+raw.save(os.path.join('out_dir', 'raw.fif'), overwrite=True)
 
 # == CREATE PRODUCT.JSON ==
 add_raw_info_to_product(product_items, raw)

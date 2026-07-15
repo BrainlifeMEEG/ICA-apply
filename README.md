@@ -14,9 +14,9 @@ This Brainlife App applies Independent Component Analysis (ICA) decomposition to
 
 ## Outputs
 
-- **out_dir/meg.fif**: Raw data with ICA components applied
+- **out_dir/raw.fif**: Raw data with ICA components applied
 - **out_figs/plot_overlay.png**: Visualization of ICA overlay before application  
-- **out_report/report_ica.html**: Quality control report with ICA information
+- **out_report/report.html**: Quality control report with ICA information
 - **product.json**: Metadata about applied ICA for Brainlife.io interface
 
 ## Configuration Parameters
