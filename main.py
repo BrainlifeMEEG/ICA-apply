@@ -82,30 +82,28 @@ ica.exclude.extend(config['exclude'])
 eog_ch = None
 if config.get('EOG_chan') and config['EOG_chan'] != 'None':
     eog_ch = config['EOG_chan']
-    # turn comma separated string into a list of numbers if multiple
     try:
-        eog_ch = [int(x) for x in re.split("\\W+", eog_ch)]
-        if len(eog_ch) > 1:
-            raise ValueError('Only one EOG channel should be specified')
-        eog_ch = eog_ch[0] if eog_ch else None
-    except ValueError:
+        # Try to convert to int if it's a number
+        eog_ch = int(eog_ch)
+    except (ValueError, TypeError):
+        # Keep as string (channel name)
         pass
 
 ecg_ch = None
 if config.get('ECG_chan') and config['ECG_chan'] != 'None':
     ecg_ch = config['ECG_chan']
     try:
-        ecg_ch = [int(x) for x in re.split("\\W+", ecg_ch)]
-        if len(ecg_ch) > 1:
-            raise ValueError('Only one ECG channel should be specified')
-        ecg_ch = ecg_ch[0] if ecg_ch else None
-    except ValueError:
+        # Try to convert to int if it's a number
+        ecg_ch = int(ecg_ch)
+    except (ValueError, TypeError):
+        # Keep as string (channel name)
         pass
     
 product_items = []
 
 # == DETECT BAD COMPONENTS ==
 if config.get('reject_EOG', False):
+    eog_epochs = mne.preprocessing.create_eog_epochs(raw, ch_name=eog_ch)
     eog_idx, eog_scores = ica.find_bads_eog(raw, ch_name=eog_ch, threshold=3.0, 
                                             start=None, stop=None, l_freq=1, h_freq=10, 
                                             reject_by_annotation=True, measure='zscore', verbose=None)
@@ -113,6 +111,7 @@ if config.get('reject_EOG', False):
     add_info_to_product(product_items,f'Excluded {len(eog_idx)} EOG artifact components')
 
 if config.get('reject_ECG', False):
+    ecg_epochs = mne.preprocessing.create_ecg_epochs(raw, ch_name=ecg_ch)
     ecg_idx, ecg_scores = ica.find_bads_ecg(raw, ch_name=ecg_ch, threshold='auto',
                                             start=None, stop=None, l_freq=8, h_freq=16,
                                             method='ctps', reject_by_annotation=True, measure='zscore', verbose=None)
@@ -135,7 +134,7 @@ report_text = f'<p><b>Total Components:</b> {ica.n_components}</p>'
 report_text += f'<p><b>Excluded Components:</b> {len(ica.exclude)}</p>'
 if ica.exclude:
     report_text += f'<p><b>Excluded Indices:</b> {sorted(ica.exclude)}</p>'
-report.save(os.path.join('out_report', 'report.html'), overwrite=True)
+report.save(os.path.join('out_report', 'report.html'), overwrite=True, verbose=False)
 
 # == APPLY ICA ==
 ica.apply(raw)
