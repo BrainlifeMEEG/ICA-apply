@@ -144,7 +144,7 @@ raw.save(os.path.join('out_dir', 'raw.fif'), overwrite=True)
 
 # == CREATE PRODUCT.JSON ==
 add_raw_info_to_product(product_items, raw)
-add_image_to_product(product_items, overlay_fig_path, 'ICA Overlay')
+add_image_to_product(product_items, 'ICA Overlay', filepath=overlay_fig_path)
 add_info_to_product(product_items, f'Applied ICA with {len(ica.exclude)} excluded components', 'success')
 create_product_json(product_items)
 
