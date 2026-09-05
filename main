@@ -1,12 +1,16 @@
 #!/bin/bash
 
 #PBS -l nodes=1:ppn=1
-#PBS -l walltime=00:10:00
+#PBS -l walltime=01:00:00
 
 #SBATCH --mem=20G
 
 set -x
 set -e
 
-singularity exec docker://brainlifemeeg/mne:1.12.1 python3 main.py
+# -u: unbuffered stdout, so print() output lands in the slurm log
+# immediately instead of sitting in a block-buffered pipe (matching
+# ICA-fit/filter-raw's own convention) -- useful now that walltime is
+# longer, so a genuinely slow run stays distinguishable from a hang.
+singularity exec docker://brainlifemeeg/mne:1.12.1 python3 -u main.py
 
