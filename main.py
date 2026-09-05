@@ -126,7 +126,14 @@ plt.savefig(overlay_fig_path, dpi=150)
 plt.close()
 
 # == CREATE REPORT ==
-report = mne.Report(title='ICA Application Report')
+# verbose=False at construction (not just on save() below), matching
+# ICA-fit/epoch's own established convention -- report.save()'s own
+# verbose=False only quiets that one call; add_ica() has no verbose
+# parameter of its own to pass it to directly, so it inherits whatever
+# level the Report object itself was built with. Without this, add_ica()
+# runs at MNE's default log level and clogs the cluster log with its own
+# chatty per-figure/per-asset progress lines (e.g. "Embedding: ...js").
+report = mne.Report(title='ICA Application Report', verbose=False)
 report.add_ica(ica, 'ICA Components', inst=raw)
 
 # Add overlay information
