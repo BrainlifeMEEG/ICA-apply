@@ -1,6 +1,6 @@
 {
 
-  "mne": "/network/lustre/iss02/cenir/analyse/meeg/BRAINLIFE/datasets/ds000117/derivatives/meg_derivatives/sub-01/ses-meg/meg/sub-01_ses-meg_task-facerecognition_run-01_proc-sss_meg.fif",
+  "mne": "/path/to/sub-01_task-example_raw.fif",
   "ica": "/network/lustre/iss02/cenir/analyse/meeg/BRAINLIFE/code/app-ICA-fit/out_dir/ica.fif",
   "exclude": "0; 1, 13 14"
 }
